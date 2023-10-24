@@ -35,3 +35,53 @@ EXPOSE 8080
 ADD target/spring-boot-docker.jar spring-boot-docker.jar 
 ENTRYPOINT ["java","-jar","/spring-boot-docker.jar"]
 ```
+
+## Deploy the Images to a Public Registry
+Build your Docker images and push them to a container registry:
+```
+docker build -t <registry-username>/<image-name>:<tag> .
+docker push <registry-username>/<image-name>:<tag>
+```
+## Create a Cluster
+Set up a Kubernetes cluster, either locally using tools like Minikube or in the cloud using a service like AWS EKS, Google GKE, or Azure AKS.
+
+## Create Deployment and Service Manifest Files for Each Service
+Create Kubernetes manifest files `` app.yml `` for each microservice. These files define how each microservice will run in the Kubernetes cluster.
+
+Here's an example manifest for a Deployment and Service:
+
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: microservice-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: microservice
+  template:
+    metadata:
+      labels:
+        app: microservice
+    spec:
+      containers:
+        - name: microservice
+          image: <registry-username>/<image-name>:<tag>
+          ports:
+            - containerPort: 8080
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: microservice-service
+spec:
+  selector:
+    app: microservice
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: LoadBalancer
+```
