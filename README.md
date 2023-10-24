@@ -85,3 +85,10 @@ spec:
       targetPort: 8080
   type: LoadBalancer
 ```
+## Deploy the Microservice onto the Kubernetes Cluster and Test the Application
+Apply the Kubernetes manifest files to deploy your microservices to the cluster:
+
+```
+kubectl apply -f app.yml
+```
+Ensure the microservices are running and accessible in the cluster. Test the application by accessing the services within the cluster.
